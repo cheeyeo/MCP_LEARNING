@@ -14,11 +14,13 @@ Explores 2 different MCP transport modes:
 
 Uses `uv` to manage venvs and dependencies:
 ```
-uv venv venv
+uv init --python 3.13.3
 
-source venv/bin/activate
+uv venv my-venv
 
-uv pip install "mcp[cli]" httpx google-genai uvicorn
+source my-venv/bin/activate
+
+uv add "mcp[cli]" httpx google-genai uvicorn
 ```
 
 To use MCP inspector via uv for stdio example:
@@ -49,6 +51,11 @@ NOTE: Both examples require a .env file with the gemini api key:
 ```
 GEMINI_API_KEY=XXXXX
 ```
+
+### TODO
+
+* Learn about OAuth in MCP
+* Learn about writing tests for MCP servers
 
 
 ### References
