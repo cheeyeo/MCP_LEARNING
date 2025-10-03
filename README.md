@@ -14,11 +14,11 @@ Explores 2 different MCP transport modes:
 
 Uses `uv` to manage venvs and dependencies:
 ```
-uv init --python 3.13.3
+uv init --python 3.13.3 # creates .python-version and pyproject.toml
 
-uv venv my-venv
+uv venv # creates .venv
 
-source my-venv/bin/activate
+source .venv/bin/activate
 
 uv add "mcp[cli]" httpx google-genai uvicorn
 ```
