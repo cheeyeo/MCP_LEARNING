@@ -60,6 +60,11 @@ GEMINI_API_KEY=XXXXX
 
 ### References
 
+[Building MCP server on AWS APIGATEWAY]: https://heeki.medium.com/building-an-mcp-server-as-an-api-developer-cfc162d06a83
+
+[OAUTH with MCP]: https://heeki.medium.com/understanding-oauth2-and-implementing-identity-aware-mcp-servers-221a06b1a6cf
+
+
 https://builder.aws.com/content/301AFBdz2tMxoTTpsRCZj4QyY6u/how-to-setup-mcp-with-uv-in-python-the-right-way
 
 https://realpython.com/python-mcp/
@@ -70,3 +75,11 @@ https://github.com/invariantlabs-ai/mcp-streamable-http/tree/main/python-example
 
 ( example using sse )
 https://github.com/sidharthrajaram/mcp-sse?tab=readme-ov-file
+
+
+https://www.marktechpost.com/2025/09/01/implementing-oauth-2-1-for-mcp-servers-with-scalekit-a-step-by-step-coding-tutorial/
+
+
+https://github.com/sagar-n/mcp_oauth
+
+

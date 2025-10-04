@@ -105,4 +105,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Start server with Streamable HTTP transport
-    uvicorn.run(mcp.streamable_http_app, host="localhost", port=args.port)
+    uvicorn.run(mcp.streamable_http_app(), host="localhost", port=args.port)
