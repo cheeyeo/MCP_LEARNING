@@ -8,5 +8,6 @@ dependencies = [
     "google-genai>=1.40.0",
     "httpx>=0.28.1",
     "mcp[cli]>=1.15.0",
+    "mem0ai>=1.0.0",
     "uvicorn>=0.37.0",
 ]
