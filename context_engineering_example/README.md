@@ -19,13 +19,13 @@ For self-hosted, use the `Memory` client and provide a config of LLM, embedding 
 
 For subscription model, use the `MemoryClient` class and provide an API Key in the constructor. Note that for the free tier you only get 10,000 messages?
 
-
+By default, memo0 stores history in ~/.mem0/history and creates a temp qdrant database under /tmp/qdrant
 
 
 ### REF
 
+https://docs.mem0.ai/open-source/overview
+
 https://www.philschmid.de/gemini-with-memory
-
-
 
 https://github.com/philschmid/gemini-samples/tree/main
