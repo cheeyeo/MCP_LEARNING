@@ -9,6 +9,25 @@ Components of context engineering:
 * Retrieval ( fetching info dynamically - RAG ? )
 
 
+Context engineering is:
+
+* A system, not just a text prompt
+  its the output of a system that runs before the main LLM call
+
+* Dynamic
+  Created on the fly, tailored to the immediate task
+
+* About using the right information and tools at the right time
+  Ensure model isn't missing crucial information
+  providing both knowledge ( information ) and capabilities ( tools ) only when required and helpful
+
+* Where the format matters
+  how information is presented matters
+  a concise summary is better than a raw data dump
+  a clear tool schema is better than a vague instruction
+
+
+
 #### On Mem0
 
 mem0 has 2 versions:
@@ -23,6 +42,16 @@ By default, memo0 stores history in ~/.mem0/history and creates a temp qdrant da
 
 
 ### REF
+
+https://www.philschmid.de/context-engineering
+
+https://blog.langchain.com/the-rise-of-context-engineering/
+
+https://github.com/humanlayer/12-factor-agents/blob/main/content/factor-03-own-your-context-window.md
+
+https://simonwillison.net/2025/Jun/27/context-engineering/
+
+https://rlancemartin.github.io/2025/06/23/context_engineering/
 
 https://docs.mem0.ai/open-source/overview
 

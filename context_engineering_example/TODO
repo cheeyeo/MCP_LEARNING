@@ -5,4 +5,3 @@
     turn the example agent script into client
     provide the tools as input into the genai client config
 * Setup RAG ? ( How to do so ? )
-* Setup ReACT loop ? 
