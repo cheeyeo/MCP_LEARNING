@@ -1,7 +1,5 @@
 ### TODO
 
-* Setup S3 Vector storage
-* Setup tool use via MCP
-    turn the example agent script into client
-    provide the tools as input into the genai client config
+* Setup S3 Vector storage for mem0
 * Setup RAG ? ( How to do so ? )
+    https://medium.com/@saurabhgssingh/understanding-rag-building-a-rag-system-from-scratch-with-gemini-api-b11ad9fc1bf7
