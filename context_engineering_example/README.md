@@ -27,6 +27,13 @@ Context engineering is:
   a clear tool schema is better than a vague instruction
 
 
+#### Tool use in Gemini
+
+When defining tools using `tools` parameter in `generate_content` the model scopes all responses to using only the tools passed to it. 
+
+
+
+
 
 #### On Mem0
 

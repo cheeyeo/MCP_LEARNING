@@ -39,11 +39,7 @@ class MCPClient:
             func1 = genai.types.FunctionDeclaration(
                 name=tool.name,
                 description=tool.description,
-                parameters_json_schema={
-                    "type": "object",
-                    "properties": tool.inputSchema["properties"],
-                    "required": tool.inputSchema["required"]
-                }
+                parameters=tool.inputSchema
             )
 
             tool = genai.types.Tool(function_declarations=[func1])

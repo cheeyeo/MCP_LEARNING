@@ -5,15 +5,10 @@ from mem0 import Memory
 from mcp_client import MCPClient
 
 
-system_prompt = "You are a helpful AI. Answer the question based on query and memories.\nUser Memories:\n{memories_str}"
-
 system_prompt_v2 = """
-You are a helpful AI. Answer the question based on the query and memories. Use the tools available when you need more information.
+You are a helpful AI. Answer the question based on the query and memories.
 User Memories:
 {memories_str}
-
-Available tools:
-{tools}
 """
 
 async def chat_with_memories(client: genai.Client, mcp_client: MCPClient, memory: Memory, history: list[dict], user_id: str = 'default_user') -> list[dict]:
@@ -27,10 +22,11 @@ async def chat_with_memories(client: genai.Client, mcp_client: MCPClient, memory
     print(memories_str)
 
     tools = await mcp_client.get_tools()
+    tools = [genai.types.Tool(google_maps=genai.types.GoogleMaps()), *tools]
+    # tool_names = "\n".join([f"- {tool.function_declarations[0].name}" for tool in tools])
+    # print(tool_names)
 
-    tool_names = "\n".join([f"- {tool.function_declarations[0].name}" for tool in tools])
-
-    memory_system_prompt = system_prompt_v2.format(memories_str=memories_str, tools=tool_names)
+    memory_system_prompt = system_prompt_v2.format(memories_str=memories_str)
     print(f"MEM SYSTEM PROMPT: {memory_system_prompt}")
 
     # TODO: since we are providing the list of tools here Gemini is unable to provide list of pools as it doesn't have the tool to provide that information i.e. query of 'where are the nearest swimming pools' fail with `cannot provide information about the nearest swimming pools as my capabilities are limited to providing current temperature information`
@@ -50,11 +46,14 @@ async def chat_with_memories(client: genai.Client, mcp_client: MCPClient, memory
     if response.candidates[0].content.parts[0].function_call:
         function_call = response.candidates[0].content.parts[0].function_call
         print(f"FUNCTION CALL: {function_call}")
+        if function_call.name == 'google_maps':
+            # get the response text from the tool
+            history.append({"role": "model", "parts": [{"text": response.text}]})
+        else:
+            #  In a real app, you would call your function here:
+            tool_result = await mcp_client.session.call_tool(function_call.name, function_call.args)
 
-        #  In a real app, you would call your function here:
-        tool_result = await mcp_client.session.call_tool(function_call.name, function_call.args)
-
-        history.append({"role": "model", "parts": [{"text": tool_result.content[0].text}]})
+            history.append({"role": "model", "parts": [{"text": tool_result.content[0].text}]})
     else:
         history.append({"role": "model", "parts": [{"text": response.text}]})
 
