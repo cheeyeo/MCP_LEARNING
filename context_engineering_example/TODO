@@ -1,5 +1,10 @@
 ### TODO
 
+* How to secure the MCP server?
+  
+  https://auth0.com/blog/an-introduction-to-mcp-and-authorization/
+
+
 * Setup S3 Vector storage for mem0
 * Setup RAG ? ( How to do so ? )
     https://medium.com/@saurabhgssingh/understanding-rag-building-a-rag-system-from-scratch-with-gemini-api-b11ad9fc1bf7

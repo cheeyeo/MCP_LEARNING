@@ -112,7 +112,6 @@ async def main():
         }
     }
 
-
     memory = Memory.from_config(config)
     # print(memory)
 
