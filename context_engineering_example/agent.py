@@ -6,30 +6,34 @@ from mcp_client import MCPClient
 
 
 system_prompt_v2 = """
-You are a helpful AI. Answer the question based on the query and memories.
-User Memories:
+You are a helpful AI assistant. Answer the question based on the query and memories.
+
+<MEMORIES>
+Here is some information about the user:
 {memories_str}
+</MEMORIES>
 """
 
-async def chat_with_memories(client: genai.Client, mcp_client: MCPClient, memory: Memory, history: list[dict], user_id: str = 'default_user') -> list[dict]:
-    query = history[-1]["parts"][0]["text"] 
+async def chat_with_memories(query: str, client: genai.Client, mcp_client: MCPClient, memory: Memory, history: list[genai.types.Content], user_id: str = 'default_user') -> list[genai.types.Content]:
     print(query)
+
+    history.append(genai.types.Content(role="user", parts=[genai.types.Part(text=query)]))
     
-    relevant_memories = memory.search(query=query, user_id=user_id, limit=5)
+    relevant_memories = memory.search(query=query, user_id=user_id)
     print(relevant_memories)
 
     memories_str = "\n".join(f"- {entry['memory']}" for entry in relevant_memories["results"])
     print(memories_str)
 
-    tools = await mcp_client.get_tools()
-    tools = [genai.types.Tool(google_maps=genai.types.GoogleMaps()), *tools]
-    # tool_names = "\n".join([f"- {tool.function_declarations[0].name}" for tool in tools])
-    # print(tool_names)
+    mcp_tools = await mcp_client.get_tools()
+
+    google_maps_tool = genai.types.Tool(google_maps=genai.types.GoogleMaps())
+
+    tools: list[genai.types.Tool] = [google_maps_tool, *mcp_tools]
 
     memory_system_prompt = system_prompt_v2.format(memories_str=memories_str)
     print(f"MEM SYSTEM PROMPT: {memory_system_prompt}")
 
-    # TODO: since we are providing the list of tools here Gemini is unable to provide list of pools as it doesn't have the tool to provide that information i.e. query of 'where are the nearest swimming pools' fail with `cannot provide information about the nearest swimming pools as my capabilities are limited to providing current temperature information`
     config = genai.types.GenerateContentConfig(
         tools=tools,
         temperature=0.0,
@@ -46,28 +50,46 @@ async def chat_with_memories(client: genai.Client, mcp_client: MCPClient, memory
     if response.candidates[0].content.parts[0].function_call:
         function_call = response.candidates[0].content.parts[0].function_call
         print(f"FUNCTION CALL: {function_call}")
-        if function_call.name == 'google_maps':
-            # get the response text from the tool
-            history.append({"role": "model", "parts": [{"text": response.text}]})
-        else:
-            #  In a real app, you would call your function here:
-            tool_result = await mcp_client.session.call_tool(function_call.name, function_call.args)
 
-            history.append({"role": "model", "parts": [{"text": tool_result.content[0].text}]})
+        if function_call.name == "google_maps":
+            tool_result = response.text
+        else:
+            tool_result = await mcp_client.session.call_tool(function_call.name, function_call.args)
+            tool_result = tool_result.content[0].text
+
+        # Create function response part
+        func_resp_part = genai.types.Part.from_function_response(
+            name=function_call.name,
+            response={"result": tool_result}
+        )
+        #  add function call to history
+        history.append(response.candidates[0].content)
+        # add function resp to history
+        history.append(genai.types.Content(role="user", parts=[func_resp_part]))
+
+        final_response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=history,
+            config=config
+        )
+        history.append(genai.types.Content(role="model", parts=[genai.types.Part(text=final_response.text)]))
     else:
-        history.append({"role": "model", "parts": [{"text": response.text}]})
+        history.append(genai.types.Content(role="model", parts=[genai.types.Part(text=response.text)]))
 
     # To create new memories from conversation we need to convert history to a list of messages
-    messages = [{"role": "user" if i % 2 == 0 else "assistant", "content": part["parts"][0]["text"]} for i, part in enumerate(history)]
-
+    messages: list[dict] = []
+    for content in history:
+        role = content.role
+        if role == "model":
+            role = "assistant"
+        part = content.parts[0].text
+        messages.append({"role": role, "content": part})
     memory.add(messages, user_id=user_id)
 
     return history
 
 
 async def main():
-    client = genai.Client()
-
     config = {
         "embedder": {
             "provider": "gemini",
@@ -97,6 +119,7 @@ async def main():
     print("Chatting with Gemini ( type 'exit' to quit )")
     history = []
 
+    client = genai.Client()
     mcp_client = MCPClient()
     
     try:
@@ -106,10 +129,9 @@ async def main():
             if user_input.lower() == "exit":
                 print("Goodbye")
                 break
-            # print(history)
-            history.append({"role": "user", "parts": [{"text": user_input}]})
-            response = await chat_with_memories(client, mcp_client, memory, history)
-            print(response[-1]["parts"][0]["text"])
+
+            response = await chat_with_memories(user_input, client, mcp_client, memory, history, 'chee')
+            print(response[-1].parts[0].text)
     finally:
         await mcp_client.cleanup()
 

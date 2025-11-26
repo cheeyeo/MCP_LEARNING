@@ -9,7 +9,7 @@ mcp = FastMCP(name="weather", json_response=False, stateless_http=False)
 
 
 # Define the function with type hints and docstring
-async def get_current_temperature(location: str) -> str:
+async def get_current_temperature(location: str) -> dict:
     """Gets the current temperature for a given location.
 
     Args:
@@ -22,11 +22,11 @@ async def get_current_temperature(location: str) -> str:
     # TODO: Make actual API call
     temperature = 25
     tempUnit = "Celsius"
-    return f"Temperature: {temperature} {tempUnit}"
+    return {"temperature": temperature, "units": tempUnit}
 
 
 @mcp.tool()
-async def current_temperature(location: str) -> str:
+async def current_temperature(location: str) -> dict:
     data = await get_current_temperature(location)
     return data
 

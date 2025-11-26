@@ -48,6 +48,10 @@ For subscription model, use the `MemoryClient` class and provide an API Key in t
 By default, memo0 stores history in ~/.mem0/history and creates a temp qdrant database under /tmp/qdrant
 
 
+Sometimes the short term conversation is not stored in memory as the facts has to be about the user i.e. if the query provided is `I live in XXX` or `I like xxx` that gets stored but other than that its not stored. The query stored has to be about the user himself... ( preferences etc )
+
+
+
 ### REF
 
 https://www.philschmid.de/context-engineering
@@ -65,3 +69,7 @@ https://docs.mem0.ai/open-source/overview
 https://www.philschmid.de/gemini-with-memory
 
 https://github.com/philschmid/gemini-samples/tree/main
+
+https://github.com/philschmid/gemini-samples/blob/main/guides/gemini-with-memory.ipynb
+
+https://medium.com/google-cloud/model-context-protocol-mcp-with-google-gemini-llm-a-deep-dive-full-code-ea16e3fac9a3
